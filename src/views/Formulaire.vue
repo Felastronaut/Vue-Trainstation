@@ -2,24 +2,24 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        Formulaire
+        Dev API call SNCF
       </div>
     </div>
     <div class="row">
       <div class="col-12">
-        <Trains/>
+        <CallSNCF/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Trains from '@/components/Trains.vue'
+import CallSNCF from '@/components/CallSNCF.vue'
 
 export default {
   name: 'Formulaire',
   components: {
-    Trains
+    CallSNCF
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-  <h1>Bitcoin Price Index</h1>
+  <h1>Call SNCF</h1>
 
   <section v-if="errored">
     <p>Nous sommes désolés, nous ne sommes pas en mesure de récupérer ces informations pour le moment. Veuillez réessayer ultérieurement.</p>

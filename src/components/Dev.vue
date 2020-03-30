@@ -34,14 +34,6 @@
         <b-button variant="primary" @click="rechercher">Rechercher</b-button>
         <p>{{voyage}}</p>
        </div>
-
-       <div class="apiinfo">
-           
-            <p>{{ apiinfo }}</p>
-            <span class="lighten">
-            
-            </span>
-        </div>
     </b-form>
 </template>
 
@@ -49,9 +41,6 @@
 
 
 <script>
-
-import axios from 'axios'
-
 export default {
   name: 'Dev',
   data() {
@@ -79,21 +68,6 @@ export default {
           return this.depart + ' -> ' + this.arrivee + ' the ' + this.date + ' at ' + this.time
       }
   },
-
-  mounted () {
-    axios
-      .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-      .then(response => (this.apiinfo = response.data.bpi))
-      .catch(error => console.log(error))
-  },
-
-  filters: {
-       // Filter definitions
-        currencydecimal (value) {
-            return value.toFixed(2);
-        }
-    }
-
 }
 </script>
 
@@ -104,7 +78,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.b-form {
-    background-color: red;
-}
 </style>
