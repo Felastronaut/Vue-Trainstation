@@ -32,7 +32,7 @@
             v-model="currency"/>
 
         <b-button variant="primary" @click="rechercher">Rechercher</b-button>
-        <p>{{voyage}}</p>
+        <span>{{voyage}}</span>
        </div>
     </b-form>
 </template>
