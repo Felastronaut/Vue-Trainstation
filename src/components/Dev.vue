@@ -28,15 +28,19 @@
         <label class="sr-only" for="arrivee">Currency</label>
         <b-input 
             id="currency" 
-            placeholder="currency"
+            placeholder="Currency"
             v-model="currency"/>
 
         <b-button variant="primary" @click="rechercher">Rechercher</b-button>
         <p>{{voyage}}</p>
        </div>
 
-       <div id="api">
+       <div class="apiinfo">
+           
             <p>{{ apiinfo }}</p>
+            <span class="lighten">
+            
+            </span>
         </div>
     </b-form>
 </template>
@@ -45,6 +49,7 @@
 
 
 <script>
+
 import axios from 'axios'
 
 export default {
@@ -78,8 +83,17 @@ export default {
   mounted () {
     axios
       .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-      .then(response => (this.apiinfo = response))
-  }
+      .then(response => (this.apiinfo = response.data.bpi))
+      .catch(error => console.log(error))
+  },
+
+  filters: {
+       // Filter definitions
+        currencydecimal (value) {
+            return value.toFixed(2);
+        }
+    }
+
 }
 </script>
 

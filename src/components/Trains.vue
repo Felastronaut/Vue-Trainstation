@@ -1,42 +1,38 @@
 <template>
-    <b-form>
-        <label class="sr-only" for="depart">Départ</label>
-        <b-input
-            id="depart"
-            placeholder="Départ"
-            v-model="depart"/>
-
-        <label class="sr-only" for="arrivee">Arrivée</label>
-        <b-input 
-            id="arrivee" 
-            placeholder="Arrivée"
-            v-model="arrivee"/>
-
-        <b-button variant="primary" @click="rechercher">Rechercher</b-button>
-        <p>{{voyage}}</p>
-    </b-form>
+<div id="app">
+  <h1>Bitcoin Price Index</h1>
+  <div v-for="currency in info" v-bind:key="currency.id" class="currency">
+    {{ currency.description }}:
+    <span class="lighten">
+      <span v-html="currency.symbol"></span>{{ currency.rate_float | currencydecimal }}
+    </span>
+  </div>
+</div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Trains',
-  data() {
-    return{
-        depart: '',
-        arrivee: ''
+  data () {
+    return {
+      info: null
     }
   },
-  methods: {
-      rechercher(){
-          console.log( 'votre voyage est ' + this.voyage)
-      }
+  mounted () {
+    axios
+      .get('https://api.coindesk.com/v1/bpi/currentprice.json')
+      .then(response => (this.info = response.data.bpi))
+      .catch(error => console.log(error))
   },
-  computed: {
-      voyage() {
-          return this.depart + ' -> ' + this.arrivee
-      }
+  filters: {
+  currencydecimal (value) {
+    return value.toFixed(2)
   }
+},
 }
+
 </script>
 
 <style scoped>
