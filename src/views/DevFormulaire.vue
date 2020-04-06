@@ -10,7 +10,7 @@
           <Dev/>
       </div>
     </div>
-    <Call/>
+
   </div>
 </template>
 
@@ -18,14 +18,13 @@
 // @ is an alias to /src
 import Dev from '@/components/Dev.vue'
 import List from '@/components/List.vue'
-import Call from '@/components/CallAPI.vue'
 
 export default {
   name: 'About',
   components: {
     Dev,
     List,
-    Call
+
   }
 }
 </script>

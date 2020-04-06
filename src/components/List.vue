@@ -1,27 +1,34 @@
 <template>
-    <div class="List">
-        <div class="col">
-        <p>Date departure</p>
-        <p>Time for departure</p>
-        <p>Location departure</p>
-        <p>Location arrival</p>
-        <p>Your currency</p>
-        </div>
-    </div>   
+    <b-form>
+    <div class="form">
+
+      <div class="input_wrapper">
+            <label for="input-none">Date :</label>
+      </div>
+      <div class="input_wrapper">
+            <label for="input-none">Time :</label>
+      </div>
+      <div class="input_wrapper">
+            <label for="input-none">Depart :</label>
+      </div>
+      <div class="input_wrapper">
+            <label for="input-none">Arrivée :</label>
+      </div>
+      <div class="input_wrapper">
+            <label for="input-none">Monnaie :</label>
+      </div>
+    </div>
+  </b-form>
 </template>
 
 <script>
-export default {
-  name: 'List',
-  data() { 
-      return { text1: '5' }
-    }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.List {
-    background-color: rgba(0,0,255,.1);
+.input_wrapper {
+  position: relative;
+  margin: 1.4rem 0;
+  z-index: 1;
 }
 </style>
