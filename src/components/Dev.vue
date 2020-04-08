@@ -16,13 +16,14 @@
         <label class="sr-only" for="depart">Departure</label>
         <b-input
           id="depart"
-          @keyup="searchGare()"
+          @keypress="searchGareDepart()"
           placeholder="Departure"
           ref="depart"
           v-model="depart"
         />
-        <div v-if="infos" class="result_list" variant="success" id="depart-list">
-            <b-dropdown-item v-for="info in infos" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
+        <div v-if="infosdepart" id="depart-list">
+          <div v-if="loading">Chargement...</div>
+          <b-dropdown-item v-for="info in infosdepart" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
         </div>
       </div>
 
@@ -36,8 +37,8 @@
           v-model="arrivee"
 
         />
-        <div v-if="infos" class="result_list" variant="success" id="depart-list">
-            <b-dropdown-item v-for="info in infos" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
+        <div v-if="infosarrivee" id="arrival-list">
+          <b-dropdown-item v-for="info in infosarrivee" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
         </div>
       </div>
 
@@ -65,7 +66,7 @@ export default {
   data() {
     return {
       infosdepart: [],
-      infos: [],
+      infosarrivee: [],
       loading: false,
       errored: false,
       expandStats: {
@@ -106,7 +107,7 @@ export default {
       this.etape = 1;
       this.gareselected = info;
     },
-    searchGare() {
+    searchGareDepart() {
       this.loading = true;
       axios
         .get(
@@ -114,8 +115,8 @@ export default {
           { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
         )
         .then(response => {
-          this.infos = response.data.records;
-          console.log(this.infos);
+          this.infosdepart = response.data.records;
+          console.log(this.infosdepart);
         })
         .catch(error => {
           console.log(error);
@@ -132,8 +133,8 @@ export default {
           { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
         )
         .then(response => {
-          this.infos = response.data.records;
-          console.log(this.infos);
+          this.infosarrivee = response.data.records;
+          console.log(this.infosarrivee);
         })
         .catch(error => {
           console.log(error);
