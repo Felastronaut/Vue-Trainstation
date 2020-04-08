@@ -17,16 +17,12 @@
         <b-input
           id="depart"
           @keyup="searchGare()"
-          @focus="expandDiv()"
-          @blur="expandDiv()"
           placeholder="Departure"
           ref="depart"
           v-model="depart"
         />
-        <div v-if="infos" class="result_list" id="depart-list">
-          <ul>
-            <li v-for="info in infos" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</li>
-          </ul>
+        <div v-if="infos" class="result_list" variant="success" id="depart-list">
+            <b-dropdown-item v-for="info in infos" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
         </div>
       </div>
 
@@ -34,17 +30,14 @@
         <label class="sr-only" for="arrivee">Arrival</label>
         <b-input
           id="arrivee"
-          @focus="expandDiv()"
-          @blur="expandDiv()"
-          @keyup="searchGare()"
+          @keyup="searchGareArrivee()"
           placeholder="Arrival"
-          v-model="arrivee"
           ref="arrival"
+          v-model="arrivee"
+
         />
-        <div v-if="infos" class="result_list" id="arrival-list">
-          <ul>
-            <li v-for="info in infos" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</li>
-          </ul>
+        <div v-if="infos" class="result_list" variant="success" id="depart-list">
+            <b-dropdown-item v-for="info in infos" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
         </div>
       </div>
 
@@ -71,6 +64,7 @@ export default {
   name: "Trains",
   data() {
     return {
+      infosdepart: [],
       infos: [],
       loading: false,
       errored: false,
@@ -94,15 +88,7 @@ export default {
   },
 
   methods: {
-    expandDiv() {
-      const elem = this.$refs;
-      this.expandStats[elem] = !this.expandStats[elem];
-      document.getElementById("depart-list").style.height = this.expandStats[
-        elem
-      ]
-        ? "200px"
-        : "0px";
-    },
+
     rechercher() {
       console.log("Date : " + this.date);
       console.log("Time : " + this.time);
@@ -125,6 +111,24 @@ export default {
       axios
         .get(
           `https://data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=${this.depart}&lang=FR&rows=3`,
+          { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
+        )
+        .then(response => {
+          this.infos = response.data.records;
+          console.log(this.infos);
+        })
+        .catch(error => {
+          console.log(error);
+          this.errored = true;
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    searchGareArrivee() {
+      this.loading = true;
+      axios
+        .get(
+          `https://data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=${this.arrivee}&lang=FR&rows=3`,
           { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
         )
         .then(response => {
@@ -165,29 +169,5 @@ export default {
   position: relative;
   margin: 1rem 0;
   z-index: 1;
-}
-.result_list {
-  width: 100%;
-  height: 0;
-  position: relative;
-  background: #fff;
-  z-index: 2;
-  transition: height 0.2s;
-  color: #000;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  text-align: left;
-}
-.result_list ul {
-  margin: 0;
-  padding: 0;
-}
-.result_list ul li {
-  list-style-type: none;
-  padding: 10px 5px;
-  border-bottom: 1px solid #eee;
-}
-.result_list-active {
-  height: 200px;
 }
 </style>
