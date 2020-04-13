@@ -31,7 +31,7 @@
       </section>
     </div>
     <div class="etape1" v-if="etape == 1">
-      Vous avez sélectionné la gare {{gareselected.fields.gare_ut_libelle}} au point de longitude {{gareselected.fields.pltf_latitude_entreeprincipale_wgs84}} et lattitude : {{gareselected.fields.pltf_longitude_entreeprincipale_wgs84}}
+      Vous avez sélectionné la gare {{gareselected.fields.gare_ut_libelle}} au point de longitude {{gareselected.fields.pltf_latitude_entreeprincipale_wgs84}} et latitude : {{gareselected.fields.pltf_longitude_entreeprincipale_wgs84}}
     </div>
     <div class="etape1" v-else>
       Vous n'avez pas encore sélectionné une gare

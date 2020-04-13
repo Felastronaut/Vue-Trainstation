@@ -8,6 +8,7 @@
     <div class="row">
       <div class="col-12">
         <CallSNCF/>
+        <TestSoap/>
       </div>
     </div>
   </div>
@@ -15,11 +16,15 @@
 
 <script>
 import CallSNCF from '@/components/CallSNCF.vue'
+import TestSoap from '@/components/TestSoap.vue'
 
 export default {
   name: 'Formulaire',
   components: {
-    CallSNCF
+    CallSNCF,
+    TestSoap
   }
 }
+
+
 </script>
