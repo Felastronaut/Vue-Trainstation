@@ -38,7 +38,13 @@
 
         />
         <div v-if="infosarrivee" id="arrival-list">
-          <b-dropdown-item v-for="info in infosarrivee" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
+          <b-dropdown-item 
+          v-for="info in infosarrivee" 
+          :key="info.recordid"
+          @click="recupGare(infosarrivee)"
+          >
+            {{ info.fields.gare_ut_libelle }}
+          </b-dropdown-item>
         </div>
       </div>
 
@@ -98,6 +104,9 @@ export default {
       console.log("Arrival : " + this.currency);
       console.log("Your trip is " + this.voyage);
     },
+    calculVoyage(){
+
+    },
     retourEtape() {
       if (this.etape > 0) {
         this.etape = this.etape - 1;
@@ -106,6 +115,7 @@ export default {
     recupGare(info) {
       this.etape = 1;
       this.gareselected = info;
+      console.log("T'as cliqué"  + this.gareselected)
     },
     searchGareDepart() {
       this.loading = true;

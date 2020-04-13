@@ -14,6 +14,7 @@
                 v-model="depart"/>
       </div>
             <b-button variant="primary" @click="searchGare()">Rechercher</b-button>
+      
       <section v-if="errored">
         <p>Nous sommes désolés, nous ne sommes pas en mesure de récupérer ces informations pour le moment. Veuillez réessayer ultérieurement.</p>
       </section>
@@ -22,7 +23,7 @@
         <div v-if="loading">Chargement...</div>
 
         <div v-for="info in infos" :key="info.recordid" class="col-md-12">
-          <b-button @click="recupGare(info)">
+          <b-button @select="recupGare(info)">
             {{ info.fields.gare_ut_libelle }}
           </b-button><br>
         </div>
@@ -30,17 +31,15 @@
       </section>
     </div>
     <div class="etape1" v-if="etape == 1">
-      Vous avez sélectionné la gare {{gareselected.fields.gare_ut_libelle}}
+      Vous avez sélectionné la gare {{gareselected.fields.gare_ut_libelle}} au point de longitude {{gareselected.fields.pltf_latitude_entreeprincipale_wgs84}} et lattitude : {{gareselected.fields.pltf_longitude_entreeprincipale_wgs84}}
     </div>
     <div class="etape1" v-else>
-      Vous n'avez pas sélectionné la gare
-    </div>
-
-    <div class="etape1" v-if="etape == 2">
-      Vous avez sélectionné la gare {{gareselected.fields.gare_ut_libelle}}
+      Vous n'avez pas encore sélectionné une gare
     </div>
   </div>
 </template>
+
+
 
 <script>
 import axios from 'axios'
@@ -91,6 +90,8 @@ export default {
 }
 
 </script>
+
+
 
 <style scoped>
 </style>
