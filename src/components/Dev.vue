@@ -1,71 +1,47 @@
 <template>
   <b-form>
     <div class="form">
+      <b-form-group label="Currency">
+        <b-form-radio-group
+          v-model="selectedCurrency"
+          :options="currencies"
+          plain
+          name="plain-inline"
+        ></b-form-radio-group>
+      </b-form-group>
 
       <div class="input_wrapper">
-        <label class="sr-only" for="date">Date of departure</label>
-        <b-input id="date" type="date" v-model="date" />
+        <label for="date">Date of departure</label>
+        <b-form-datepicker id="date" v-model="date"/>
       </div>
 
       <div class="input_wrapper">
-        <label class="sr-only" for="time">Time</label>
-        <b-input id="time" type="time" v-model="time" />
+        <label for="time">Time</label>
+        <b-form-timepicker id="time" v-model="time" />
       </div>
 
       <div class="input_wrapper">
-        <label class="sr-only" for="depart">Departure</label>
-        <b-input
-          id="depart"
-          @keypress="searchGareDepart()"
-          placeholder="Departure"
-          ref="depart"
-          v-model="depart"
-        />
-        <div v-if="infosdepart" id="depart-list">
-          <div v-if="loading">Chargement...</div>
-          <b-dropdown-item 
-            v-for="info in infosdepart" 
-            :key="info.recordid">
-              {{ info.fields.gare_ut_libelle }}
-            </b-dropdown-item>
-        </div>
+        <label for="depart">Départ</label>
+        <b-form-input list="depart" v-model="depart" @input="searchGare('dep', depart)"/>
+        <datalist id="depart">
+          <option v-if="loading">Chargement...</option>
+          <option v-for="info in infosdepart" :key="info.recordid">{{info.fields.gare_ut_libelle}}</option>
+        </datalist>
       </div>
 
       <div class="input_wrapper">
-        <label class="sr-only" for="arrivee">Arrival</label>
-        <b-input
-          id="arrivee"
-          @keyup="searchGareArrivee()"
-          placeholder="Arrival"
-          ref="arrival"
-          v-model="arrivee"
-        />
-        <div v-if="infosarrivee" id="arrival-list">
-          <b-dropdown-item 
-          v-for="info in infosarrivee" 
-          :key="info.recordid"
-          @click="recupGare(infosarrivee)"
-          >
-            {{ info.fields.gare_ut_libelle }}
-          </b-dropdown-item>
-        </div>
-      </div>
-
-      <div class="input_wrapper">
-        <select v-model="selectedCurrency">
-          <option v-for="currency in currencies" :key="currency.id" v-bind:value="currency.value">
-            {{ currency.zone }}
-          </option>
-        </select>
-          <span>Your currency selected: {{ selectedCurrency }}</span>
+        <label for="arrivee">Arrivé</label>
+        <b-form-input list="arrivee" v-model="arrivee" @input="searchGare('arr', arrivee)"/>
+        <datalist id="arrivee">
+          <option v-if="loading">Chargement...</option>
+          <option v-for="info in infosarrivee" :key="info.recordid">{{info.fields.gare_ut_libelle}}</option>
+        </datalist>
       </div>
       
       <div class="input_wrapper">
-        <b-button variant="primary" @click="rechercher">Rechercher</b-button>
+        <b-button variant="primary" @click="rechercher(date, time)">Rechercher</b-button>
         <span>{{voyage}}</span>
       </div>
-      
-      
 
     </div>
   </b-form>
@@ -76,6 +52,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment";
 
 
 export default {
@@ -98,12 +75,13 @@ export default {
       date: "",
       time: "",
       currencies: [
-      { zone: 'Europe', value: 'EUR' },
-      { zone: 'Swiss', value: 'CHF' },
-      { zone: 'USA', value: 'USD' }
+        { text: 'EUR', value: 'EUR' },
+        { text: 'CHF', value: 'CHF' },
+        { text: 'USD', value: 'USD' }
       ],
-      selectedCurrency: '',
-      apiinfo: undefined
+      selectedCurrency: 'EUR',
+      apiinfo: undefined,
+      voyage: '',
     };
   },
 
@@ -112,13 +90,30 @@ export default {
 
   methods: {
 
-    rechercher() {
-      console.log("Date : " + this.date);
-      console.log("Time : " + this.time);
-      console.log("Departure : " + this.depart);
-      console.log("Arrival : " + this.arrivee);
-      console.log("Your currency : " + this.selectedCurrency);
-      console.log("Your trip is " + this.voyage);
+    rechercher(date, time) {
+      time = time.split(':')
+      date = new Date(date)
+      date = moment(date).format('YYYYMMDD')
+      const datetime = date+'T'+time[0]+time[1]+time[2]
+      const depcoord = this.infosdepart[0].geometry.coordinates
+      const arrcoord = this.infosarrivee[0].geometry.coordinates
+      this.loading = true;
+      console.log(`https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}`)
+      axios
+        .get(
+          `https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}`,
+          { headers: { Authorization: "cb48489b-567a-4458-8525-517390fb1220" } }
+        )
+        .then(response => {
+          this.voyage = response.data;
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+          this.errored = true;
+        })
+        .finally(() => (this.loading = false));
+
     },
     calculVoyage(){
 
@@ -133,16 +128,21 @@ export default {
       this.gareselected = info;
       console.log("T'as cliqué"  + this.gareselected)
     },
-    searchGareDepart() {
+    searchGare(type, gare) {
       this.loading = true;
       axios
         .get(
-          `https://data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=${this.depart}&lang=FR&rows=3`,
+          `https://data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=${gare}&lang=FR&rows=3`,
           { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
         )
         .then(response => {
-          this.infosdepart = response.data.records;
-          console.log(this.infosdepart);
+          console.log(response.data.records);
+          if(type == 'dep'){
+            this.infosdepart = response.data.records;
+          }
+          else if(type == 'arr'){
+            this.infosarrivee = response.data.records;
+          }
         })
         .catch(error => {
           console.log(error);
@@ -150,38 +150,6 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-
-    searchGareArrivee() {
-      this.loading = true;
-      axios
-        .get(
-          `https://data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=${this.arrivee}&lang=FR&rows=3`,
-          { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
-        )
-        .then(response => {
-          this.infosarrivee = response.data.records;
-          console.log(this.infosarrivee);
-        })
-        .catch(error => {
-          console.log(error);
-          this.errored = true;
-        })
-        .finally(() => (this.loading = false));
-    }
-  },
-
-  computed: {
-    voyage() {
-      return (
-        this.depart +
-        " -> " +
-        this.arrivee +
-        " the " +
-        this.date +
-        " at " +
-        this.time
-      );
-    }
   }
 };
 </script>
@@ -195,7 +163,6 @@ export default {
 .input_wrapper {
   position: relative;
   margin: 1rem 0;
-  z-index: 1;
 }
   .pagination {
     display: flex;
