@@ -23,7 +23,11 @@
         />
         <div v-if="infosdepart" id="depart-list">
           <div v-if="loading">Chargement...</div>
-          <b-dropdown-item v-for="info in infosdepart" :key="info.recordid">{{ info.fields.gare_ut_libelle }}</b-dropdown-item>
+          <b-dropdown-item 
+            v-for="info in infosdepart" 
+            :key="info.recordid">
+              {{ info.fields.gare_ut_libelle }}
+            </b-dropdown-item>
         </div>
       </div>
 
@@ -35,7 +39,6 @@
           placeholder="Arrival"
           ref="arrival"
           v-model="arrivee"
-
         />
         <div v-if="infosarrivee" id="arrival-list">
           <b-dropdown-item 
@@ -49,14 +52,21 @@
       </div>
 
       <div class="input_wrapper">
-        <label class="sr-only" for="arrivee">Currency</label>
-        <b-input id="currency" placeholder="Currency" v-model="currency" />
+        <select v-model="selectedCurrency">
+          <option v-for="currency in currencies" :key="currency.id" v-bind:value="currency.value">
+            {{ currency.zone }}
+          </option>
+        </select>
+          <span>Your currency selected: {{ selectedCurrency }}</span>
       </div>
       
       <div class="input_wrapper">
         <b-button variant="primary" @click="rechercher">Rechercher</b-button>
         <span>{{voyage}}</span>
       </div>
+      
+      
+
     </div>
   </b-form>
 </template>
@@ -66,6 +76,7 @@
 
 <script>
 import axios from "axios";
+
 
 export default {
   name: "Trains",
@@ -86,7 +97,12 @@ export default {
       arrivee: "",
       date: "",
       time: "",
-      currency: "",
+      currencies: [
+      { zone: 'Europe', value: 'EUR' },
+      { zone: 'Swiss', value: 'CHF' },
+      { zone: 'USA', value: 'USD' }
+      ],
+      selectedCurrency: '',
       apiinfo: undefined
     };
   },
@@ -101,7 +117,7 @@ export default {
       console.log("Time : " + this.time);
       console.log("Departure : " + this.depart);
       console.log("Arrival : " + this.arrivee);
-      console.log("Arrival : " + this.currency);
+      console.log("Your currency : " + this.selectedCurrency);
       console.log("Your trip is " + this.voyage);
     },
     calculVoyage(){
@@ -181,4 +197,14 @@ export default {
   margin: 1rem 0;
   z-index: 1;
 }
+  .pagination {
+    display: flex;
+    margin: .25rem .25rem 0;
+  }
+  .pagination button {
+    flex-grow: 1;
+  }
+  .pagination button:hover {
+    cursor: pointer;
+  }
 </style>
