@@ -10,8 +10,6 @@
         <CallSNCF/>
         <br>
         <TestSoap/>
-        <br>
-        <TestVueSelect/>
       </div>
     </div>
   </div>
@@ -20,14 +18,12 @@
 <script>
 import CallSNCF from '@/components/CallSNCF.vue'
 import TestSoap from '@/components/TestSoap.vue'
-import TestVueSelect from '@/components/TestVueSelect.vue'
 
 export default {
   name: 'Formulaire',
   components: {
     CallSNCF,
-    TestSoap,
-    TestVueSelect
+    TestSoap
   }
 }
 

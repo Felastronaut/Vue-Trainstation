@@ -1,17 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import DevForm from '../views/DevFormulaire.vue'
 import Formulaire from '../views/Formulaire.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
   {
     path: '/devform',
     name: 'DevForm',
