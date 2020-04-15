@@ -1,12 +1,8 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="mcol bg-secondary text-light">
-        Formulaire
+      <div class="">
           <Dev/>
-      </div>
     </div>
-
   </div>
 </template>
 
@@ -24,6 +20,6 @@ export default {
 
 <style scoped>
 .container {
-    background-color: lightblue;
+    background-color: rgb(143, 166, 196);
 }
 </style>

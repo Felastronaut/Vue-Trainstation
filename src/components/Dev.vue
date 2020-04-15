@@ -12,7 +12,7 @@
 
       <div class="input_wrapper">
         <label for="date">Date of departure</label>
-        <b-form-datepicker id="date" v-model="date"/>
+        <b-form-datepicker id="date" :state="false" :min="minDate" v-model="date"/>
       </div>
 
       <div class="input_wrapper">
@@ -58,6 +58,9 @@ import moment from "moment";
 export default {
   name: "Trains",
   data() {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const minDate = new Date(today)
     return {
       infosdepart: [],
       infosarrivee: [],
@@ -80,8 +83,9 @@ export default {
         { text: 'USD', value: 'USD' }
       ],
       selectedCurrency: 'EUR',
-      apiinfo: undefined,
+      apiinfo: '',
       voyage: '',
+      minDate: minDate
     };
   },
 
@@ -164,14 +168,4 @@ export default {
   position: relative;
   margin: 1rem 0;
 }
-  .pagination {
-    display: flex;
-    margin: .25rem .25rem 0;
-  }
-  .pagination button {
-    flex-grow: 1;
-  }
-  .pagination button:hover {
-    cursor: pointer;
-  }
 </style>
