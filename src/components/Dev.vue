@@ -12,7 +12,7 @@
 
       <div class="input_wrapper">
         <label for="date">Date of departure</label>
-        <b-form-datepicker id="date" :state="false" :min="minDate" v-model="date"/>
+        <b-form-datepicker id="date" :min="minDate" v-model="date"/>
       </div>
 
       <div class="input_wrapper">
@@ -30,7 +30,7 @@
       </div>
 
       <div class="input_wrapper">
-        <label for="arrivee">Arrivé</label>
+        <label for="arrivee">Arrivée</label>
         <b-form-input list="arrivee" v-model="arrivee" @input="searchGare('arr', arrivee)"/>
         <datalist id="arrivee">
           <option v-if="loading">Chargement...</option>
@@ -89,9 +89,6 @@ export default {
     };
   },
 
-  filters: {
-  },
-
   methods: {
 
     rechercher(date, time) {
@@ -105,7 +102,7 @@ export default {
       console.log(`https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}`)
       axios
         .get(
-          `https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}`,
+          `https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}&max_nb_journeys=5`,
           { headers: { Authorization: "cb48489b-567a-4458-8525-517390fb1220" } }
         )
         .then(response => {
@@ -118,19 +115,6 @@ export default {
         })
         .finally(() => (this.loading = false));
 
-    },
-    calculVoyage(){
-
-    },
-    retourEtape() {
-      if (this.etape > 0) {
-        this.etape = this.etape - 1;
-      }
-    },
-    recupGare(info) {
-      this.etape = 1;
-      this.gareselected = info;
-      console.log("T'as cliqué"  + this.gareselected)
     },
     searchGare(type, gare) {
       this.loading = true;
