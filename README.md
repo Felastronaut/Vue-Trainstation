@@ -22,3 +22,6 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### For the CORS issue do the following command
+chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
