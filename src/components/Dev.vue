@@ -83,7 +83,6 @@ export default {
         { text: 'USD', value: 'USD' }
       ],
       selectedCurrency: 'EUR',
-      apiinfo: '',
       voyage: '',
       minDate: minDate
     };

@@ -22,7 +22,7 @@
       <section v-else>
         <div v-if="loading">Chargement...</div>
 
-        <div v-for="info in infos" :key="info.recordid" class="col-md-12">
+        <div v-for="info in infos" :key="info.recordid">
           <b-button @select="recupGare(info)">
             {{ info.fields.gare_ut_libelle }}
           </b-button><br>
