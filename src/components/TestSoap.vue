@@ -20,6 +20,7 @@
     <b-button @click="soaprequest()">
       SOAP REQUEST
     </b-button>
+    {{ response }}
   </div>
 </template>
 
@@ -61,9 +62,9 @@ methods:{
                 </soapenv:Body>\
               </soapenv:Envelope>`;
       axios
-        .post(`https://soap-felastronaut-trouvetontra.herokuapp.com`,xmls,{headers:{'Content-Type': 'text/xml'}})
+        .post(`http://soap-felastronaut-trouvetontra.herokuapp.com/services/CalculDistance?wsdl`,xmls,{headers:{'Content-Type': 'text/xml'}})
         .then(response => {
-            this.response = response
+            this.response = response.data
             console.log(response);
         })
         .catch(function (error) {
