@@ -57,7 +57,8 @@
 
               <b-button @click="rechercher(date, time)">Update</b-button>
               <b-button variant="primary" @click="reset()">Reset</b-button>
-              <h2>These are next trains departure hours for the time you selected : </h2> <ul>{{ voyage }}</ul>
+              <h2>These are next trains departure hours for the time you selected : </h2> 
+              <ul>Departure 1 : <strong>{{ departureTime1 }}</strong> for a duration of <strong>{{ timeVoyage1 }} h</strong></ul>
 
               
         </ul>
@@ -131,6 +132,9 @@ export default {
       errorForm: 0,
       villeDepart: '',
       villeArrivee: '',
+      voyage1: '',
+      timeVoyage1: '',
+      departureTime1: ''
     };
   },
 
@@ -138,7 +142,6 @@ export default {
 
     reset(){
       this.voyageClique = 0
-      console.log(this.voyageClique)
     },
     rechercher(date, time) {
       time = time.split(':')
@@ -148,19 +151,33 @@ export default {
       const depcoord = this.infosdepart[0].geometry.coordinates
       const arrcoord = this.infosarrivee[0].geometry.coordinates
       this.loading = true;
-      console.log(`https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}`)
+      console.log(`https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}&max_nb_journeys=5`)
+      console.log('^^^^^^^^ CALL API SNCF JOURNEY ^^^^^^^^')
       axios
         .get(
           `https://api.sncf.com/v1/coverage/sncf/journeys?from=${depcoord[0]};${depcoord[1]}&to=${arrcoord[0]};${arrcoord[1]}&datetime=${datetime}&max_nb_journeys=5`,
           { headers: { Authorization: "cb48489b-567a-4458-8525-517390fb1220" } }
         )
         .then(response => {
-          this.voyage = response.data;
+          this.voyage1 = response.data.journeys[0];
+          console.log(response.data.journeys);
+          console.log('^^^^^^^^ Response API Journey ^^^^^^^^')
+
+          this.departureTime1 = response.data.journeys[0].departure_date_time;
+          this.departureTime1 = moment(this.departureTime1).format('L');
+          console.log(this.departureTime1);
+          console.log('^^^^^^^^ departureTime1 ^^^^^^^^')
+
+          this.timeVoyage1 = response.data.journeys[0].duration;
+          
+          this.timeVoyage1 = new Date(this.timeVoyage1 * 1000).toISOString().substr(11, 8);
+          console.log(this.timeVoyage1);
+          console.log('^^^^^^^^ timeVoyage1 ^^^^^^^^')
+
           this.villeDepart = this.infosdepart[0].fields.gare_alias_libelle_noncontraint
           this.villeArrivee = this.infosarrivee[0].fields.gare_alias_libelle_noncontraint
           this.voyageClique = 1
           this.soaprequest()
-          console.log(response.data);
         })
         .catch(error => {
           console.log(error);
@@ -214,20 +231,11 @@ export default {
         .post(`http://soap-felastronaut-trouvetontra.herokuapp.com/services/CalculDistance?wsdl`,xmls,{headers:{'Content-Type': 'text/xml'}})
         .then(response => {
             this.response = response.data
-            console.log(response.data);
-            console.log("^^^^^^ RESPONSE ^^^^^^")
-
             var parser;
             parser = new DOMParser();
             var xmlDoc = parser.parseFromString(response.data,"text/xml");
-            console.log(xmlDoc)
             var xmlResponseString = xmlDoc.getElementsByTagName("return")[0].childNodes[0].nodeValue;
-            console.log(xmlResponseString)
-            console.log("^^^^^^ TEST XML PARSE ^^^^^^")
-
             var xmlResponseInt = parseFloat(xmlResponseString).toFixed(2);
-            console.log(xmlResponseInt)
-            console.log("^^^^^^ TEST INT ^^^^^^")
             this.distanceClique = 1
             this.calculDistance = xmlResponseInt;
             this.calculVoyage()
@@ -247,8 +255,6 @@ export default {
         .then(response => {
           
           this.response = response.data;
-          console.log(response);
-          console.log("^^^^^^ Response API full ^^^^^^");
           
           if (this.selectedCurrency == "EUR") {
             this.factorCurrencies = response.data.EUR
@@ -266,8 +272,6 @@ export default {
             this.factorCurrencies = response.data.EUR
           }
           this.factorCurrency = parseFloat(this.factorCurrencies).toFixed(2);
-          console.log(this.factorCurrency)
-          console.log("^^^^^^ factor ^^^^^^");
           
           this.calculPrix = this.calculDistance * this.factorCurrency
           this.prixClique = 1
