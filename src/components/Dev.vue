@@ -204,7 +204,7 @@ export default {
         this.loading = true;
       axios
         .get(
-          `http://localhost:3000/devise`
+          `https://tranquil-beach-75690.herokuapp.com/devise/1`
         )
         .then(response => {
           
