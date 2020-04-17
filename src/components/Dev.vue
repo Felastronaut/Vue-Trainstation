@@ -273,7 +273,8 @@ export default {
           }
           this.factorCurrency = parseFloat(this.factorCurrencies).toFixed(2);
           
-          this.calculPrix = this.calculDistance * this.factorCurrency
+          this.calculPrix = parseFloat(this.calculDistance).toFixed(2) * this.factorCurrency
+          this.calculPrix = parseFloat(this.calculPrix).toFixed(2)
           this.prixClique = 1
         })
         .catch(error => {

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DevForm from '../views/DevFormulaire.vue'
-import Formulaire from '../views/Formulaire.vue'
 
 Vue.use(VueRouter)
 
@@ -11,11 +10,6 @@ const routes = [
     name: 'DevForm',
     component: DevForm
   },
-  {
-    path: '/form',
-    name: 'Formulaire',
-    component: Formulaire
-  }
 ]
 
 const router = new VueRouter({
