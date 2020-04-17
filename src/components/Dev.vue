@@ -37,23 +37,21 @@
           <option v-for="info in infosarrivee" :key="info.recordid">{{info.fields.gare_ut_libelle}} ({{info.fields.pltf_departement_numero}})</option>
         </datalist>
       </div>
-      
+      <div class="input_wrapper">
+        <b-button @click="soaprequest()">
+          Calcul Distance ( SOAP )
+        </b-button><br>
+        La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong><br>
+        <b-button @click="calculVoyage()">
+          Calcul Prix ( API )
+        </b-button><br>
+        Le prix de votre trajet est de : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Prix aux Km : {{ factorCurrency }} {{ selectedCurrency }}/Km)
+      </div>
       <div class="input_wrapper">
         <b-button variant="primary" @click="rechercher(date, time)">Voyager</b-button>
         <span>{{voyage}}</span>
       </div>
     </div>
-
-    <b-button @click="soaprequest()">
-      Calcul Distance ( SOAP )
-    </b-button><br>
-    La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong><br>
-    <b-button @click="calculVoyage()">
-      Calcul Prix ( API )
-    </b-button><br>
-    Le prix de votre trajet est donc de : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Prix aux Km : {{ factorCurrency }} {{ selectedCurrency }}/Km)
-
-
   </b-form>
 </template>
 

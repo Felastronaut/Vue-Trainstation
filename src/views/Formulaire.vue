@@ -17,13 +17,11 @@
 
 <script>
 import CallSNCF from '@/components/CallSNCF.vue'
-import TestSoap from '@/components/TestSoap.vue'
 
 export default {
   name: 'Formulaire',
   components: {
-    CallSNCF,
-    TestSoap
+    CallSNCF
   }
 }
 </script>
