@@ -41,7 +41,7 @@ export default {
       latarrivee: '53',
       longarrivee: '32',
       latdepart: '12',
-      longdepart: '12'
+      longdepart: '12',
     }
   },
   
@@ -65,7 +65,20 @@ methods:{
         .post(`http://soap-felastronaut-trouvetontra.herokuapp.com/services/CalculDistance?wsdl`,xmls,{headers:{'Content-Type': 'text/xml'}})
         .then(response => {
             this.response = response.data
-            console.log(response);
+            console.log(response.data);
+            console.log("^^^^^^ RESPONSE ^^^^^^")
+
+            var parser;
+            parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(response.data,"text/xml");
+            console.log(xmlDoc)
+            var xmlResponseString = xmlDoc.getElementsByTagName("return")[0].childNodes[0].nodeValue;
+            console.log(xmlResponseString)
+            console.log("^^^^^^ TEST XML PARSE ^^^^^^")
+
+            var xmlResponseInt = parseFloat(xmlResponseString).toFixed(2);
+            console.log(xmlResponseInt)
+            console.log("^^^^^^ TEST INT ^^^^^^")
         })
         .catch(function (error) {
           console.log(error);

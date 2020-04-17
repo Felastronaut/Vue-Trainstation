@@ -25,7 +25,7 @@
         <b-form-input list="depart" v-model="depart" @input="searchGare('dep', depart)"/>
         <datalist id="depart">
           <option v-if="loading">Chargement...</option>
-          <option v-for="info in infosdepart" :key="info.recordid">{{info.fields.gare_ut_libelle}}</option>
+          <option v-for="info in infosdepart" :key="info.recordid">{{info.fields.gare_ut_libelle}} ({{info.fields.pltf_departement_numero}})</option>
         </datalist>
       </div>
 
@@ -34,16 +34,22 @@
         <b-form-input list="arrivee" v-model="arrivee" @input="searchGare('arr', arrivee)"/>
         <datalist id="arrivee">
           <option v-if="loading">Chargement...</option>
-          <option v-for="info in infosarrivee" :key="info.recordid">{{info.fields.gare_ut_libelle}}</option>
+          <option v-for="info in infosarrivee" :key="info.recordid">{{info.fields.gare_ut_libelle}} ({{info.fields.pltf_departement_numero}})</option>
         </datalist>
       </div>
       
       <div class="input_wrapper">
-        <b-button variant="primary" @click="rechercher(date, time)">Rechercher</b-button>
+        <b-button variant="primary" @click="rechercher(date, time)">Voyager</b-button>
         <span>{{voyage}}</span>
       </div>
-
     </div>
+
+    <b-button @click="soaprequest()">
+      Calcul Distance ( SOAP )
+    </b-button><br><br>
+    La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong>
+
+
   </b-form>
 </template>
 
@@ -85,7 +91,13 @@ export default {
       ],
       selectedCurrency: 'EUR',
       voyage: '',
-      minDate: minDate
+      minDate: minDate,
+      response: '',
+      latarrivee: '',
+      longarrivee: '',
+      latdepart: '',
+      longdepart: '',
+      calculDistance: '',
     };
   },
 
@@ -116,6 +128,7 @@ export default {
         .finally(() => (this.loading = false));
 
     },
+    
     searchGare(type, gare) {
       this.loading = true;
       axios
@@ -138,7 +151,52 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+
+    soaprequest(){
+      const depcoord = this.infosdepart[0].geometry.coordinates
+      const arrcoord = this.infosarrivee[0].geometry.coordinates
+      this.loading = true
+      let xmls=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:exam="http://example/">\
+                <soapenv:Header/>\
+                <soapenv:Body>\
+                    <exam:distance>\
+                      <arg0>${arrcoord[0]}</arg0>\
+                      <arg1>${arrcoord[1]}</arg1>\
+                      <arg2>${depcoord[0]}</arg2>\
+                      <arg3>${depcoord[1]}</arg3>\
+                      <!--Optional:-->\
+                      <arg4>K</arg4>\
+                    </exam:distance>\
+                </soapenv:Body>\
+              </soapenv:Envelope>`;
+      axios
+        .post(`http://soap-felastronaut-trouvetontra.herokuapp.com/services/CalculDistance?wsdl`,xmls,{headers:{'Content-Type': 'text/xml'}})
+        .then(response => {
+            this.response = response.data
+            console.log(response.data);
+            console.log("^^^^^^ RESPONSE ^^^^^^")
+
+            var parser;
+            parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(response.data,"text/xml");
+            console.log(xmlDoc)
+            var xmlResponseString = xmlDoc.getElementsByTagName("return")[0].childNodes[0].nodeValue;
+            console.log(xmlResponseString)
+            console.log("^^^^^^ TEST XML PARSE ^^^^^^")
+
+            var xmlResponseInt = parseFloat(xmlResponseString).toFixed(2);
+            console.log(xmlResponseInt)
+            console.log("^^^^^^ TEST INT ^^^^^^")
+            this.calculDistance = xmlResponseInt;
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+        .finally(() => this.loading = false);
+    }
   }
+
+  
 };
 </script>
 
