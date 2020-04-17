@@ -10,15 +10,18 @@
         ></b-form-radio-group>
       </b-form-group>
 
+
       <div class="input_wrapper">
         <label for="date">Date of departure</label>
         <b-form-datepicker id="date" :min="minDate" v-model="date"/>
       </div>
 
+
       <div class="input_wrapper">
         <label for="time">Time</label>
         <b-form-timepicker id="time" v-model="time" />
       </div>
+
 
       <div class="input_wrapper">
         <label for="depart">Departure</label>
@@ -29,6 +32,7 @@
         </datalist>
       </div>
 
+
       <div class="input_wrapper">
         <label for="arrivee">Arrival</label>
         <b-form-input list="arrivee" v-model="arrivee" @input="searchGare('arr', arrivee)"/>
@@ -37,19 +41,44 @@
           <option v-for="info in infosarrivee" :key="info.recordid">{{info.fields.gare_ut_libelle}} ({{info.fields.pltf_departement_numero}})</option>
         </datalist>
       </div>
+
+
       <div class="input_wrapper">
-        <b-button @click="soaprequest()">
-          Distance of your trip ( SOAP )
-        </b-button><br>
-        La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong><br>
-        <b-button @click="calculVoyage()">
-          Price of your Trip ( API )
-        </b-button><br>
-        Le prix de votre trajet est de : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Prix aux Km : {{ factorCurrency }} {{ selectedCurrency }}/Km)
+        <ul v-if="voyageClique == 1"> 
+              <h1>Your Trip :</h1> From <strong> {{ villeDepart }} </strong> to <strong>  {{ villeArrivee }} </strong> <br>
+
+
+              <b-button @click="soaprequest()">
+                Distance of your trip ( SOAP )
+              </b-button><br>
+              <p v-if="distanceClique == 1">The distance of your journey is :<strong> {{ calculDistance }} Km </strong></p><br>
+
+
+              <b-button @click="calculVoyage()">
+                Price of your Trip ( API )
+              </b-button><br>
+              <p v-if="prixClique == 1">The price of your journey is : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Price for 1 Km : <strong>{{ factorCurrency }}</strong> {{ selectedCurrency }})</p>
+
+              <b-button @click="rechercher(date, time)">Update</b-button>
+              <b-button variant="primary" @click="reset()">Reset</b-button>
+              <h2>These are the results for your journey : </h2> MONRESULTAT<span>{{voyage}}</span>
+
+              
+        </ul>
+        <h1 v-if="voyageClique == 0">
+            <strong>Please select your trip !</strong><br>
+            <b-button variant="primary" @click="rechercher(date, time)">Book your Trip</b-button>
+            
+        </h1>
       </div>
+
+
       <div class="input_wrapper">
-        <b-button variant="primary" @click="rechercher(date, time)">Voyager</b-button>
-        <span>{{voyage}}</span>
+      </div>
+
+
+      <div class="input_wrapper">
+        
       </div>
     </div>
   </b-form>
@@ -74,10 +103,6 @@ export default {
       infosarrivee: [],
       loading: false,
       errored: false,
-      expandStats: {
-        depart: false,
-        arrival: false
-      },
       authStr: "",
       etape: 0,
       gareselected: "",
@@ -103,11 +128,19 @@ export default {
       longdepart: '',
       calculDistance: '',
       calculPrix: '',
+      prixClique: 0,
+      distanceClique: 0,
+      voyageClique: 0,
+      villeDepart: '',
+      villeArrivee: ''
     };
   },
 
   methods: {
 
+    reset(){
+      this.voyageClique = 0
+    },
     rechercher(date, time) {
       time = time.split(':')
       date = new Date(date)
@@ -124,6 +157,9 @@ export default {
         )
         .then(response => {
           this.voyage = response.data;
+          this.villeDepart = this.infosdepart[0].fields.gare_alias_libelle_noncontraint
+          this.villeArrivee = this.infosarrivee[0].fields.gare_alias_libelle_noncontraint
+          this.voyageClique = 1
           console.log(response.data);
         })
         .catch(error => {
@@ -192,6 +228,7 @@ export default {
             var xmlResponseInt = parseFloat(xmlResponseString).toFixed(2);
             console.log(xmlResponseInt)
             console.log("^^^^^^ TEST INT ^^^^^^")
+            this.distanceClique = 1
             this.calculDistance = xmlResponseInt;
         })
         .catch(function (error) {
@@ -232,6 +269,7 @@ export default {
           console.log("^^^^^^ factor ^^^^^^");
           
           this.calculPrix = this.calculDistance * this.factorCurrency
+          this.prixClique = 1
         })
         .catch(error => {
           console.log(error);
