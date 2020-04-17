@@ -80,7 +80,8 @@ export default {
       currencies: [
         { text: 'EUR', value: 'EUR' },
         { text: 'CHF', value: 'CHF' },
-        { text: 'USD', value: 'USD' }
+        { text: 'USD', value: 'USD' },
+        { text: 'GBD', value: 'GBD' }
       ],
       selectedCurrency: 'EUR',
       voyage: '',
