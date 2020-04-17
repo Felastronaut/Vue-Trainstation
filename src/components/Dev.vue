@@ -45,31 +45,28 @@
 
       <div class="input_wrapper">
         <ul v-if="voyageClique == 1"> 
-              <h1>Your Trip :</h1> From <strong> {{ villeDepart }} </strong> to <strong>  {{ villeArrivee }} </strong> <br>
+              <h1>Your Trip :</h1> From <strong> {{ villeDepart }} </strong> to <strong>  {{ villeArrivee }} </strong> <br><br>
 
 
-              <b-button @click="soaprequest()">
-                Distance of your trip ( SOAP )
-              </b-button><br>
-              <p v-if="distanceClique == 1">The distance of your journey is :<strong> {{ calculDistance }} Km </strong></p><br>
+              
+              <strong> Distance of your trip </strong> ( SOAP )
+              <p v-if="distanceClique == 1"><strong> {{ calculDistance }} Km </strong></p>
 
-
-              <b-button @click="calculVoyage()">
-                Price of your Trip ( API )
-              </b-button><br>
-              <p v-if="prixClique == 1">The price of your journey is : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Price for 1 Km : <strong>{{ factorCurrency }}</strong> {{ selectedCurrency }})</p>
+              <strong> Price of your Trip</strong>  ( API )
+              <p v-if="prixClique == 1"><strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Price for 1 Km : <strong>{{ factorCurrency }}</strong> {{ selectedCurrency }})</p>
 
               <b-button @click="rechercher(date, time)">Update</b-button>
               <b-button variant="primary" @click="reset()">Reset</b-button>
-              <h2>These are the results for your journey : </h2> MONRESULTAT<span>{{voyage}}</span>
+              <h2>These are next trains departure hours for the time you selected : </h2> <ul>{{ voyage }}</ul>
 
               
         </ul>
-        <h1 v-if="voyageClique == 0">
-            <strong>Please select your trip !</strong><br>
+        <ul v-if="voyageClique == 0">
+            <h1><strong>Please select your trip !</strong></h1><br>
             <b-button variant="primary" @click="rechercher(date, time)">Book your Trip</b-button>
-            
-        </h1>
+            <h2>!! Please fill in all of the fields !!</h2>
+            <ul>otherwise it wont work (-:</ul>
+        </ul>
       </div>
 
 
@@ -116,7 +113,7 @@ export default {
         { text: 'USD', value: 'USD', logo: '$' },
         { text: 'GBD', value: 'GBD', logo: '£' }
       ],
-      selectedCurrency: 'EUR',
+      selectedCurrency: 'USD',
       factorCurrencies: '',
       factorCurrency: '',
       voyage: '',
@@ -131,8 +128,9 @@ export default {
       prixClique: 0,
       distanceClique: 0,
       voyageClique: 0,
+      errorForm: 0,
       villeDepart: '',
-      villeArrivee: ''
+      villeArrivee: '',
     };
   },
 
@@ -140,6 +138,7 @@ export default {
 
     reset(){
       this.voyageClique = 0
+      console.log(this.voyageClique)
     },
     rechercher(date, time) {
       time = time.split(':')
@@ -160,6 +159,7 @@ export default {
           this.villeDepart = this.infosdepart[0].fields.gare_alias_libelle_noncontraint
           this.villeArrivee = this.infosarrivee[0].fields.gare_alias_libelle_noncontraint
           this.voyageClique = 1
+          this.soaprequest()
           console.log(response.data);
         })
         .catch(error => {
@@ -230,6 +230,7 @@ export default {
             console.log("^^^^^^ TEST INT ^^^^^^")
             this.distanceClique = 1
             this.calculDistance = xmlResponseInt;
+            this.calculVoyage()
         })
         .catch(function (error) {
           console.log(error);
