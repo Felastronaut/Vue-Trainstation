@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
-    <router-link to="/devform">Dev Formulaire</router-link> |
-    <router-link to="/form">Formulaire</router-link>
+    || <router-link to="/devform">Find your Trip</router-link> ||
+    <router-link to="/form"></router-link>
   </div>
 </template>
 

@@ -1,4 +1,7 @@
-# codetrainstations
+# App TrouveTonTrain
+
+## To access to the website :
+https://fel-trouvetontrain.netlify.app/
 
 ## Project setup
 ```
@@ -25,3 +28,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### For the CORS issue do the following command
 chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
+
+Made by Félix Meynet

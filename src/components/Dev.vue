@@ -21,7 +21,7 @@
       </div>
 
       <div class="input_wrapper">
-        <label for="depart">Départ</label>
+        <label for="depart">Departure</label>
         <b-form-input list="depart" v-model="depart" @input="searchGare('dep', depart)"/>
         <datalist id="depart">
           <option v-if="loading">Chargement...</option>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="input_wrapper">
-        <label for="arrivee">Arrivée</label>
+        <label for="arrivee">Arrival</label>
         <b-form-input list="arrivee" v-model="arrivee" @input="searchGare('arr', arrivee)"/>
         <datalist id="arrivee">
           <option v-if="loading">Chargement...</option>
@@ -39,11 +39,11 @@
       </div>
       <div class="input_wrapper">
         <b-button @click="soaprequest()">
-          Calcul Distance ( SOAP )
+          Distance of your trip ( SOAP )
         </b-button><br>
         La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong><br>
         <b-button @click="calculVoyage()">
-          Calcul Prix ( API )
+          Price of your Trip ( API )
         </b-button><br>
         Le prix de votre trajet est de : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Prix aux Km : {{ factorCurrency }} {{ selectedCurrency }}/Km)
       </div>
