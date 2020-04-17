@@ -46,8 +46,12 @@
 
     <b-button @click="soaprequest()">
       Calcul Distance ( SOAP )
-    </b-button><br><br>
-    La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong>
+    </b-button><br>
+    La distance à parcourir pour votre trajet est de :<strong> {{ calculDistance }} Km </strong><br>
+    <b-button @click="calculVoyage()">
+      Calcul Prix ( API )
+    </b-button><br>
+    Le prix de votre trajet est donc de : <strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Prix aux Km : {{ factorCurrency }} {{ selectedCurrency }}/Km)
 
 
   </b-form>
@@ -84,12 +88,14 @@ export default {
       date: "",
       time: "",
       currencies: [
-        { text: 'EUR', value: 'EUR' },
-        { text: 'CHF', value: 'CHF' },
-        { text: 'USD', value: 'USD' },
-        { text: 'GBD', value: 'GBD' }
+        { text: 'EUR', value: 'EUR', logo: '€' },
+        { text: 'CHF', value: 'CHF', logo: 'CHF' },
+        { text: 'USD', value: 'USD', logo: '$' },
+        { text: 'GBD', value: 'GBD', logo: '£' }
       ],
       selectedCurrency: 'EUR',
+      factorCurrencies: '',
+      factorCurrency: '',
       voyage: '',
       minDate: minDate,
       response: '',
@@ -98,6 +104,7 @@ export default {
       latdepart: '',
       longdepart: '',
       calculDistance: '',
+      calculPrix: '',
     };
   },
 
@@ -193,15 +200,52 @@ export default {
           console.log(error);
         })
         .finally(() => this.loading = false);
-    }
+    },
+
+    calculVoyage(){
+        this.loading = true;
+      axios
+        .get(
+          `http://localhost:3000/devise`
+        )
+        .then(response => {
+          
+          this.response = response.data;
+          console.log(response);
+          console.log("^^^^^^ Response API full ^^^^^^");
+          
+          if (this.selectedCurrency == "EUR") {
+            this.factorCurrencies = response.data.EUR
+          }
+          else if(this.selectedCurrency == "CHF"){
+            this.factorCurrencies = response.data.CHF
+          } 
+          else if(this.selectedCurrency == "USD"){
+            this.factorCurrencies = response.data.USD
+          }
+          else if(this.selectedCurrency == "GBD"){
+            this.factorCurrencies = response.data.GBD
+          }
+          else {
+            this.factorCurrencies = response.data.EUR
+          }
+          this.factorCurrency = parseFloat(this.factorCurrencies).toFixed(2);
+          console.log(this.factorCurrency)
+          console.log("^^^^^^ factor ^^^^^^");
+          
+          this.calculPrix = this.calculDistance * this.factorCurrency
+        })
+        .catch(error => {
+          console.log(error);
+          this.errored = true;
+        })
+        .finally(() => (this.loading = false));
+    },
+    
   }
 
-  
 };
 </script>
-
-
-
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
