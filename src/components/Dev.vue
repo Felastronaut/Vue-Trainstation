@@ -193,7 +193,6 @@ export default {
           { headers: { Authorization: "3b036afe-0110-4202-b9ed-99718476c2e0" } }
         )
         .then(response => {
-          console.log(response.data.records);
           if(type == 'dep'){
             this.infosdepart = response.data.records;
           }
@@ -226,7 +225,7 @@ export default {
                 </soapenv:Body>\
               </soapenv:Envelope>`;
       axios
-        .post(`http://soap-felastronaut-trouvetontra.herokuapp.com/services/CalculDistance?wsdl`,xmls,{headers:{'Content-Type': 'text/xml'}})
+        .post(`https://soap-felastronaut-trouvetontra.herokuapp.com/services/CalculDistance?wsdl`,xmls,{headers:{'Content-Type': 'text/xml'}})
         .then(response => {
             this.response = response.data
             var parser;
