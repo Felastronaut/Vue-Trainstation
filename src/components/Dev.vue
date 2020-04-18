@@ -1,12 +1,16 @@
 <template>
   <b-form>
+    <ul v-if="voyageClique == 0">
+      <h1><strong>Please select your trip !</strong></h1><br>
+    </ul>
     <div class="form">
       <b-form-group label="Currency">
         <b-form-radio-group
           v-model="selectedCurrency"
           :options="currencies"
-          plain
-          name="plain-inline"
+          buttons
+          size="lg"
+          name="radios-btn-default"
         ></b-form-radio-group>
       </b-form-group>
 
@@ -63,9 +67,8 @@
               
         </ul>
         <ul v-if="voyageClique == 0">
-            <h1><strong>Please select your trip !</strong></h1><br>
             <b-button variant="primary" @click="rechercher(date, time)">Book your Trip</b-button>
-            <h2>!! Please fill in all of the fields !!</h2>
+            <h2>//!\\ Please fill in all of the fields //!\\</h2>
             <ul>otherwise it wont work (-:</ul>
         </ul>
       </div>
@@ -164,15 +167,10 @@ export default {
           console.log('^^^^^^^^ Response API Journey ^^^^^^^^')
 
           this.departureTime1 = response.data.journeys[0].departure_date_time;
-          this.departureTime1 = moment(this.departureTime1).format('L');
-          console.log(this.departureTime1);
-          console.log('^^^^^^^^ departureTime1 ^^^^^^^^')
+          this.departureTime1 = moment(this.departureTime1).format('LLL');
 
           this.timeVoyage1 = response.data.journeys[0].duration;
-          
           this.timeVoyage1 = new Date(this.timeVoyage1 * 1000).toISOString().substr(11, 8);
-          console.log(this.timeVoyage1);
-          console.log('^^^^^^^^ timeVoyage1 ^^^^^^^^')
 
           this.villeDepart = this.infosdepart[0].fields.gare_alias_libelle_noncontraint
           this.villeArrivee = this.infosarrivee[0].fields.gare_alias_libelle_noncontraint
