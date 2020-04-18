@@ -1,21 +1,43 @@
+@import url('https://fonts.googleapis.com/css?family=Proza+Libre|Fira+Mono');
+
+h1 {
+  font-family: 'Proza Libre', sans-serif;
+  color: #fff;
+  font-weight: 300;
+}
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: #ffffff;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
   }
   
-  #nav {
-    padding: 30px;
-  }
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  font-family: 'Proza Libre', sans-serif;
+  color: #ffffff;
   
-  #nav a {
-    font-weight: bold;
-    color: #2c3e50;
-  }
+}
+
+#nav a.router-link-exact-active {
+  color: #ffffff;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   
-  #nav a.router-link-exact-active {
-    color: #42b983;
-  }
-  
+}

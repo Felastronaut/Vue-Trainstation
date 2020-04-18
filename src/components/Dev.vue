@@ -1,7 +1,7 @@
 <template>
   <b-form>
     <ul v-if="voyageClique == 0">
-      <h1><strong>Please select your trip !</strong></h1><br>
+      <br><h1><strong>Please select your trip !</strong></h1>
     </ul>
     <div class="form">
       <b-form-group label="Currency">
@@ -57,7 +57,7 @@
               <p v-if="distanceClique == 1"><strong> {{ calculDistance }} Km </strong></p>
 
               <strong> Price of your Trip</strong>  ( API )
-              <p v-if="prixClique == 1"><strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Price for 1 Km : <strong>{{ factorCurrency }}</strong> {{ selectedCurrency }})</p>
+              <p v-if="prixClique == 1"><strong> {{ calculPrix }} {{ selectedCurrency }}</strong> (Price for 1 Km : <strong>{{ factorCurrency }}</strong> {{ selectedCurrency }})</p><br>
 
               <b-button @click="rechercher(date, time)">Update</b-button>
               <b-button variant="primary" @click="reset()">Reset</b-button>
@@ -67,7 +67,7 @@
               
         </ul>
         <ul v-if="voyageClique == 0">
-            <b-button variant="primary" @click="rechercher(date, time)">Book your Trip</b-button>
+            <b-button variant="dark" @click="rechercher(date, time)">Book your Trip</b-button><br><br>
             <h2>//!\\ Please fill in all of the fields //!\\</h2>
             <ul>otherwise it wont work (-:</ul>
         </ul>

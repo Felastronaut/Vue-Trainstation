@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-bind:style="{ backgroundColor: color}">
     <Navigation/>
     <router-view/>
   </div>
@@ -12,6 +12,11 @@
     name: 'App',
     components: {
       Navigation
+    },
+    data() {
+      return {
+      color: '#673AB7'
+      }
     }
   }
 </script>

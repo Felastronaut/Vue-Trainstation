@@ -19,6 +19,6 @@ export default {
 
 <style scoped>
 .container {
-    background-color: rgb(143, 166, 196);
+    background-color: rgb(187, 187, 187);
 }
 </style>
